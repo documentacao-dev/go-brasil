@@ -20,3 +20,11 @@ Toda tradução e retradução de página (tradução nova, sync com o upstream,
 - O marcador `<!-- ia-translate: true -->` vai na linha logo **depois** do bloco de front matter, nunca antes.
 - Arquivos `.html` são HTML com template Go: `{{...}}`, `<pre>`, `<code>`, atributos `id`, `href` e `class` ficam idênticos. Traduza só o texto entre as tags.
 - Arquivos `.md` são Markdown (goldmark) com o mesmo front matter JSON.
+
+## Publicação: go.documentacao.dev
+
+O go.dev é montado por um servidor Go, e o Firebase Hosting só serve arquivos. Por isso o deploy gera uma versão estática:
+
+- `go run ./cmd/golangorg -http=localhost:6060 &` e depois `python3 tool/estatico/gerar.py` salvam em `public/` só as páginas com o marcador `ia-translate`, com o CSS, o JS e as imagens que elas usam.
+- `firebase.json` (site `go-documentacao` no projeto `transliteradu`): `/` vai para `/doc/`, os prefixos que não traduzimos (`/pkg`, `/blog`, `/dl`…) redirecionam para o go.dev, e o `404.html` leva qualquer página ainda não traduzida para a mesma página no go.dev.
+- Página nova traduzida entra no site sozinha no próximo deploy (workflow `deploy-firebase.yml`, a cada push na `master`).
